@@ -1,0 +1,10 @@
+.p-card.p-d-flex.p-jc-center.p-ai-center.p-p-2{
+    background-color: rgba(77, 94, 163, 1);
+    color: aliceblue;
+    font-size: large;
+}
+
+.p-card.p-p-6.p-m-2{
+    background-color: #B7B8BC;
+    width: 25.3rem;
+}

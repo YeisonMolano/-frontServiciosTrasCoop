@@ -1,0 +1,10 @@
+<p-carousel
+      [value]="automobiles"
+      [autoplayInterval]="2000"
+      [circular]="true"
+      
+    >
+      <ng-template let-automobil pTemplate="item">
+        <img src="{{ automobil }}" class="carousel" />
+      </ng-template>
+</p-carousel>

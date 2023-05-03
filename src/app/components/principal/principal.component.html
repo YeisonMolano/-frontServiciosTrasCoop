@@ -1,0 +1,190 @@
+<app-header></app-header>
+<br />
+<br />
+<br /><br />
+<div class="p-d-flex p-m-0 p-p-0">
+  <div class="p-lg-8">
+    <app-slider></app-slider>
+  </div>
+  <div class="p-lg-4 p-pt-lg-2">
+    <div class="p-mb-3 p-mt-lg-6">
+      <p-button
+        label="Pedir servicio"
+        styleClass="p-button-raised p-button-secondary"
+        routerLink="servicio-taxi"
+      ></p-button>
+    </div>
+    <div class="p-mb-3">
+      <p-button
+        label="Pedir mi carnet"
+        styleClass="p-button-raised p-button-secondary"
+        (onClick)="showDialog()"
+      ></p-button>
+    </div>
+    <div>
+      <p-button
+        label="Ver horarios y precios"
+        styleClass="p-button-raised p-button-secondary"
+        routerLink="info"
+      ></p-button>
+    </div>
+  </div>
+</div>
+
+<!--Dialogo que se encarga de pedir los datos necesarios para generar el carnet-->
+
+<p-dialog
+  header="Digita tu carnet rapido y facil..."
+  [(visible)]="visible"
+  [modal]="true"
+  [style]="{ width: '50vw' }"
+  [draggable]="false"
+  [resizable]="false"
+  (onHide)="activeFormUrbano = false; activeFormIntermunicipal = false"
+>
+  <p-tabMenu
+    [model]="servicioCompartido"
+    [activeItem]="activeItem"
+    (activeItemChange)="servicio($event)"
+  ></p-tabMenu>
+  <div *ngIf="activeFormIntermunicipal" class="p-card p-grid p-m-2">
+    <div class="p-lg-4">
+      <form action="" [formGroup]="formCarnetMunicipal">
+        <div class="p-inputgroup">
+          <span class="p-inputgroup-addon">
+            <i class="pi pi-user-edit"></i>
+          </span>
+          <input pInputText placeholder="Nombre" formControlName="nombre" />
+        </div>
+        <div class="p-inputgroup">
+          <span class="p-inputgroup-addon">
+            <i class="pi pi-user-edit"></i>
+          </span>
+          <input pInputText placeholder="Apellido" formControlName="apellido" />
+        </div>
+        <div class="p-mb-3 p-ml-3" style="width: 180px">
+          <p-dropdown
+            [options]="tipoUsuario"
+            [(ngModel)]="usuario"
+            optionLabel="tipo"
+            placeholder="Seleccione un tipo"
+            formControlName="usuario"
+          ></p-dropdown>
+        </div>
+        <div class="p-inputgroup p-pt-0">
+          <p-calendar
+            appendTo="body"
+            dateFormat="dd/mm/yy"
+            [readonlyInput]="true"
+            placeholder="Fecha de nacimiento"
+            formControlName="fechaDeNacimiento"
+          ></p-calendar>
+        </div>
+        <div class="p-col-12 p-d-flex p-jc-end">
+          <button
+            pButton
+            type="button"
+            class="p-button-raised p-button-rounded"
+            label="Enviar"
+            style="width: 30%; height: 30px"
+            (click)="carnetIntermunicipal()"
+          ></button>
+        </div>
+      </form>
+    </div>
+    <div class="p-lg-8 p-pl-3">
+      <div class="p-pl-1">
+        <p>
+          Por favor ingrese 1 foto del deocumento de identidad, por cada lado, y
+          al mismo tiempo adjunte el documento entregado por la alcaldia local
+          de su pueblo.
+        </p>
+      </div>
+      <div *ngIf="!viewUpdateImage; else update">
+        <p-fileUpload
+        name="myFile[]"
+        url="http://localhost:8080/upload"
+        [multiple]="true"
+        [scrollTop]="true"
+        [previewWidth]="20"
+        (onUpload)="onUpload($event)"
+        [auto]="true"
+      ></p-fileUpload>
+      </div>
+      <ng-template #update>
+        <img src="{{img1}}" alt="">
+        <object [data]="img1" type="image/png,image/jpeg,application/pdf" width="500" height="500">
+          <p>No se puede mostrar el archivo.</p>
+        </object>
+      </ng-template>
+    </div>
+  </div>
+  <div *ngIf="activeFormUrbano" class="p-card p-grid p-m-2">
+    <div class="p-lg-4">
+      <form action="" [formGroup]="formCarnetMunicipal">
+        <div class="p-inputgroup">
+          <span class="p-inputgroup-addon">
+            <i class="pi pi-user-edit"></i>
+          </span>
+          <input pInputText placeholder="Nombre" formControlName="nombre" />
+        </div>
+        <div class="p-inputgroup">
+          <span class="p-inputgroup-addon">
+            <i class="pi pi-user-edit"></i>
+          </span>
+          <input pInputText placeholder="Apellido" formControlName="apellido" />
+        </div>
+        <div class="p-inputgroup p-pt-0">
+          <p-calendar
+            appendTo="body"
+            dateFormat="dd/mm/yy"
+            [readonlyInput]="true"
+            placeholder="Fecha de nacimiento"
+            formControlName="fechaDeNacimiento"
+          ></p-calendar>
+        </div>
+        <div class="p-col-12 p-d-flex p-jc-end">
+          <button
+            pButton
+            type="button"
+            class="p-button-raised p-button-rounded"
+            label="Enviar"
+            style="width: 30%; height: 30px"
+            (click)="carnetIntermunicipal()"
+          ></button>
+        </div>
+      </form>
+    </div>
+    <div class="p-lg-8 p-pl-3">
+      <div class="p-pl-1">
+        <p>
+          Por favor ingrese 1 foto de su cedula y/o carnet estudiantil segun sea el caso.
+          <br> 1. Estudiante: Carnet estudiantil
+          <br> 2. Persona tercera edad: Cedula de ciudadania
+        </p>
+      </div>
+      <div *ngIf="!viewUpdateImage; else update">
+        <p-fileUpload
+        name="myFile[]"
+        url="http://localhost:8080/upload"
+        [multiple]="true"
+        [scrollTop]="true"
+        [previewWidth]="20"
+        (onUpload)="onUpload($event)"
+        [auto]="true"
+      ></p-fileUpload>
+      </div>
+      <ng-template #update>
+        <img src="{{img1}}" alt="">
+        <object [data]="img1" type="image/png,image/jpeg,application/pdf" width="500" height="500">
+          <p>No se puede mostrar el archivo.</p>
+        </object>
+      </ng-template>
+    </div>
+  </div>
+</p-dialog>
+
+<p-toast></p-toast>
+
+<!--************************Panel para que los mensajes se puedan mostrar en pantalla-->
+

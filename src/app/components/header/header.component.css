@@ -1,0 +1,33 @@
+header{
+    background-color: rgba(77, 94, 163, 1);
+}
+
+.tittle{
+    color: white;
+    text-align: center;
+    font-size: larger;
+    font-family: Arial;
+}
+
+:host ::ng-deep .p-breadcrumb{
+    padding: 10px;
+    background-color: rgba(77, 94, 163, 1);
+    border-style: none;
+}
+
+:host ::ng-deep .pi{
+    font-size: 2rem;
+    color: white;
+}
+
+:host ::ng-deep .p-breadcrumb ul li .p-menuitem-link .p-menuitem-text{
+    color: white;
+}
+
+:host ::ng-deep .p-breadcrumb ul li.p-breadcrumb-chevron{
+    color: white;
+}
+
+:host ::ng-deep .p-breadcrumb ul li .p-menuitem-link .p-menuitem-icon{
+    color: white;
+}

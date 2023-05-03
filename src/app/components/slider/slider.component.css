@@ -1,0 +1,11 @@
+.carousel {
+    width: 100%;
+}
+
+:host ::ng-deep .p-carousel .p-carousel-indicators{
+  display: none;
+}
+
+:host ::ng-deep .p-carousel-container{
+  height: 300px;
+}

@@ -1,0 +1,46 @@
+<app-header></app-header>
+<div class="p-card p-m-5 p-p-6 container">
+  <form action="">
+    <div class="p-mb-3 p-ml-3">
+      <p-dropdown
+        [options]="tipoServicio"
+        [(ngModel)]="servicio"
+        optionLabel="nombre"
+        placeholder="Selecciona un servicio"
+      ></p-dropdown>
+    </div>
+    <div class="p-inputgroup">
+      <span class="p-inputgroup-addon">
+        <i class="pi pi-flag"></i>
+      </span>
+      <input pInputText placeholder="Lugar de recogida" />
+    </div>
+    <div class="p-inputgroup">
+      <span class="p-inputgroup-addon">
+        <i class="pi pi-flag-fill"></i>
+      </span>
+      <input pInputText placeholder="Lugar de destino" />
+    </div>
+    <div class="p-inputgroup">
+      <span class="p-inputgroup-addon">
+        <i class="pi pi-stopwatch"></i>
+      </span>
+      <input pInputText type="time" />
+    </div>
+    <div class="p-inputgroup">
+      <div class="p-d-flex p-lg-6">
+        <span class="p-inputgroup-addon">
+          <i class="pi pi-dollar"></i>
+        </span>
+        <input pInputText placeholder="Valor banderazo" />
+      </div>
+
+      <div class="p-lg-6 p-d-flex p-jc-end">
+        <p-button
+          label="Pedir mi carnet"
+          styleClass="p-button-raised p-button-secondary"
+        ></p-button>
+      </div>
+    </div>
+  </form>
+</div>
