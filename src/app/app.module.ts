@@ -12,6 +12,7 @@ import { FileUploadModule } from 'primeng/fileupload';
 import { HttpClientModule } from '@angular/common/http';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { GoogleMapsModule } from '@angular/google-maps';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -50,7 +51,8 @@ import { InfoPreciosComponent } from './components/info-precios/info-precios.com
     FileUploadModule,
     HttpClientModule,
     ToastModule,
-    ConfirmDialogModule
+    ConfirmDialogModule,
+    GoogleMapsModule
   ],
   providers: [MessageService, ConfirmationService],
   bootstrap: [AppComponent],
