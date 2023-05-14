@@ -1,21 +1,33 @@
 <header class="p-grid">
-  <div class="p-lg-10" >
-    <div >
-        <p-breadcrumb
-      [model]="enlaces"
-      [home]="principal"
-    ></p-breadcrumb>
+  <div class="p-lg-10">
+    <div class="p-grid">
+      <div class="p-lg-4">
+        <p-breadcrumb [model]="enlaces" [home]="principal"></p-breadcrumb>
+      </div>
+      <div class="p-lg-8 wallet">
+        <p>{{ myWallet }}</p>
+      </div>
     </div>
     <div class="tittle">
-        <h1>{{ titulo }}</h1>
-      </div>
+      <h1>{{ titulo }}</h1>
+    </div>
   </div>
   <div class="p-lg-2 p-grid p-d-flex p-ai-center p-jc-center p-m-0 p-p-0">
     <div class="p-lg-6 p-md-8 p-d-flex p-jc-end">
-        <p class="tittle">Nombre Usuario</p>
+      <p class="tittle">{{ username }}</p>
     </div>
-    <div class="p-d-flex  p-lg-6 p-md-4">
-        <i class="pi pi-user"></i>
+
+    <div *ngIf="!logued; else logued" class="p-d-flex p-lg-6 p-md-4">
+      <div>
+      <p-button icon="pi pi-sign-out" styleClass="p-button-rounded p-button-text login" routerLink="/login"></p-button>
+      </div>
     </div>
+    <ng-template #logued>
+      <div class="p-d-flex p-lg-6 p-md-4">
+        <div>
+          <p-button icon="pi pi-sign-in" styleClass="p-button-rounded p-button-text login" (onClick)="logOut()"></p-button>
+        </div>
+      </div>
+    </ng-template>
   </div>
 </header>

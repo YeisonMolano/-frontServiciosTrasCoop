@@ -19,11 +19,25 @@ export class LoginComponent {
 
   logIn(){
     if(this.authorities.valid){
-      if(this.authService.login(this.authorities.get('username')?.value, this.authorities.get('password')?.value)){
-        this.router.navigate([''])
-      }else{
-        console.log('El usuario no existe');
-      }
+      this.authService.login(this.authorities.get('username')?.value, this.authorities.get('password')?.value).subscribe(res => {
+        if(res != ''){
+          localStorage.setItem('name', res.name);
+          localStorage.setItem('lastName', res.lastName);
+          localStorage.setItem('privateKey', res.privateKey);
+          localStorage.setItem('publicKey', res.publicKey);
+          localStorage.setItem('email', res.email);
+          localStorage.setItem('tellphone', res.tellphone);
+          localStorage.setItem('myWallet', res.myWallet);
+          this.authService.getWallet(res.privateKey).subscribe(res => {
+            localStorage.setItem('myWallet', res);            
+            this.router.navigate([''])
+          })
+        }else{
+          console.log('No se ha encontrado el usuario');
+          
+        }
+        
+      })
     }else{
       console.log('Por favor ingrese todos los datos');
     }

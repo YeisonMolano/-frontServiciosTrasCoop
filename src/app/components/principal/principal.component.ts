@@ -1,15 +1,16 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { ConfirmationService, MenuItem, MessageService, ConfirmEventType } from 'primeng/api';
 import { DomSanitizer } from '@angular/platform-browser';
-import { Carnet } from 'src/app/modells/carnetMunicipal';
+import { Carnet } from 'src/app/modells/carnet';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-principal',
   templateUrl: './principal.component.html',
   styleUrls: ['./principal.component.css'],
 })
-export class PrincipalComponent {
+export class PrincipalComponent implements OnInit {
   visible: boolean;
   servicioCompartido : MenuItem[]
   activeItem : MenuItem
@@ -26,8 +27,9 @@ export class PrincipalComponent {
   viewUpdateImage : boolean
   fechaSeleccionada: Date
   imagenCargada: boolean
+  auth: boolean
 
-  constructor(private confirmationService: ConfirmationService, private fb: FormBuilder, private message: MessageService, private sanitizer: DomSanitizer) {
+  constructor(private router: Router, private confirmationService: ConfirmationService, private fb: FormBuilder, private message: MessageService, private sanitizer: DomSanitizer) {
     this.formCarnetMunicipal = fb.group({
       nombre : new FormControl('', [Validators.required]),
       apellido : new FormControl('', Validators.required),
@@ -39,6 +41,7 @@ export class PrincipalComponent {
       apellido: new FormControl('', [Validators.required]),
       tipoDocumento: new FormControl('', Validators.required)
     })
+    this.auth = false
     this.usuario= ''
     this.tipoUsuario = [{tipo: "Adulto mayor"}, {tipo: "Estudiante universitario"}]
     this.visible = false;
@@ -53,9 +56,16 @@ export class PrincipalComponent {
     this.fechaSeleccionada = new Date()
     this.imagenCargada = false
   }
+  ngOnInit(): void {
+    
+  }
 
   showDialog() {
-    this.visible = true
+    if(localStorage.getItem('username') != null){
+      this.visible = true
+    }else{
+      this.router.navigate(['login'])
+    }
   }
 
   servicio(item : MenuItem){
@@ -92,7 +102,18 @@ export class PrincipalComponent {
       carnet.apellido = this.formCarnetMunicipal.get('apellido')?.value
       carnet.tipoUsuario = this.formCarnetMunicipal.get('usuario')?.value
       carnet.fechaNacimiento = this.formCarnetMunicipal.get('fechaDeNacimiento')?.value
-      console.log(carnet);  
+      carnet.img1 = this.img1
+      carnet.img2 = this.img2
+      carnet.img3 = this.img3
+      console.log(carnet); 
+      this.formCarnetMunicipal.reset()
+      this.img1 = ''
+      this.img2 = ''
+      this.img3 = ''
+      this.imagenCargada = false
+      this.viewUpdateImage = false
+      this.visible = !this.visible
+      this.message.add({ severity: 'success', summary: 'Datos enviados', detail: 'Los datos se han cargado correctamente, se le enviará una confirmación a su correo electronico' });
     }else{
       this.message.add({ severity: 'warn', summary: 'Datos invalidos', detail: 'Por favor verifique que ha llenado todos los campos y que ha subido las imagenes correctamente' });
     }

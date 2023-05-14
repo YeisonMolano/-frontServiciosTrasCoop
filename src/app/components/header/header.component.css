@@ -9,6 +9,13 @@ header{
     font-family: Arial;
 }
 
+.wallet{
+    color: white;
+    text-align: end;
+    font-size: medium;
+    font-family: Arial;
+}
+
 :host ::ng-deep .p-breadcrumb{
     padding: 10px;
     background-color: rgba(77, 94, 163, 1);
@@ -30,4 +37,9 @@ header{
 
 :host ::ng-deep .p-breadcrumb ul li .p-menuitem-link .p-menuitem-icon{
     color: white;
+}
+
+:host ::ng-deep .p-button.p-button-icon-only{
+    width: 3rem;
+    height: 3rem;
 }

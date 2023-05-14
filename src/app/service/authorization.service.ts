@@ -1,44 +1,25 @@
 import { Injectable } from '@angular/core';
 import { Usuario } from '../modells/usuario';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthorizationService {
-  users: Array<Usuario>;
+  private rutaGlobal = 'http://localhost:8080/'
 
-  constructor() {
-    this.users = new Array<Usuario>();
-    let user = new Usuario();
-    (user.name = 'Yeison'),
-      (user.lastName = 'Molano'),
-      (user.password = '1234'),
-      (user.userType = 'ADMIN')
-    this.users.push(user);
-    let user1 = new Usuario();
-    (user1.name = 'Maria'),
-      (user1.lastName = 'Perez'),
-      (user1.password = '0987'),
-      (user1.userType = 'USER');
-    this.users.push(user1);
+  constructor(private http: HttpClient) {
   }
 
-  login(username: string, password: string): boolean {
-    if(this.findUser(username, password) != undefined){
-      let auth = this.findUser(username, password)!.userType
-      localStorage.setItem('username', username)
-      localStorage.setItem('auth', auth!)
-      return true
-    }else{
-      return false
-    }
+  login(email: string, password: string) {
+    return this.http.get<any>(this.rutaGlobal + 'login/' + email + '/' + password);
   }
 
-  findUser(name: string, password: string): Usuario|undefined {
-    let usuarioEncontrado = this.users.find((user) => user.name === name && user.password === password);
-    this.users.forEach(user =>{
-      console.log(user);
-    })
-    return usuarioEncontrado
+  logOut(){
+    localStorage.clear()
+  }
+
+  getWallet(privateKey: string){
+    return this.http.get<any>(this.rutaGlobal + 'get-wallet/' + privateKey)
   }
 }

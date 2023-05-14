@@ -1,39 +1,40 @@
 <app-header></app-header>
 <div class="p-grid p-card p-m-5 p-p-6 container">
   <div class="p-lg-4">
-    <form action="">
+    <form action="" [formGroup]="formNewService">
       <div class="p-mb-3 p-ml-3">
         <p-dropdown
           [options]="tipoServicio"
           [(ngModel)]="servicio"
-          optionLabel="nombre"
+          optionLabel="name"
           placeholder="Selecciona un servicio"
+          formControlName="service"
         ></p-dropdown>
       </div>
       <div class="p-inputgroup">
         <span class="p-inputgroup-addon">
           <i class="pi pi-flag"></i>
         </span>
-        <input pInputText placeholder="Lugar de recogida" />
+        <input pInputText placeholder="Lugar de recogida" formControlName="placeDeparture"/>
       </div>
       <div class="p-inputgroup">
         <span class="p-inputgroup-addon">
           <i class="pi pi-flag-fill"></i>
         </span>
-        <input pInputText placeholder="Lugar de destino" />
+        <input pInputText placeholder="Destino" formControlName="destinationPlace" />
       </div>
       <div class="p-inputgroup">
         <span class="p-inputgroup-addon">
           <i class="pi pi-stopwatch"></i>
         </span>
-        <input pInputText type="time" />
+        <input pInputText type="time" formControlName="time"/>
       </div>
       <div class="p-inputgroup">
         <div class="p-d-flex p-lg-6">
           <span class="p-inputgroup-addon">
             <i class="pi pi-dollar"></i>
           </span>
-          <input pInputText placeholder="Valor banderazo" />
+          <input pInputText placeholder="Valor banderazo" [disabled]="true" />
         </div>
       </div>
     </form>
@@ -44,9 +45,13 @@
   <div class="p-d-flex p-ai-center p-jc-center p-lg-3">
     <div class="p-d-flex p-jc-center">
       <p-button
-        label="Pedir mi carnet"
+        label="Confirmar"
         styleClass="p-button-raised p-button-secondary"
+        (onClick)="confirmService()"
       ></p-button>
     </div>
   </div>
 </div>
+
+<!--Toast para poder mostrar los mensajes en sobre pantalla-->
+<p-toast></p-toast>
