@@ -4,7 +4,7 @@
       <div class="p-lg-4">
         <p-breadcrumb [model]="enlaces" [home]="principal"></p-breadcrumb>
       </div>
-      <div class="p-lg-8 wallet">
+      <div class="p-lg-8 p-d-flex p-ai-center wallet">
         <p>{{ myWallet }}</p>
       </div>
     </div>
@@ -13,6 +13,9 @@
     </div>
   </div>
   <div class="p-lg-2 p-grid p-d-flex p-ai-center p-jc-center p-m-0 p-p-0">
+    <div class="p-lg-12 p-d-flex p-jc-center">
+      <p-button label="Ver servicios" styleClass="p-button-raised p-button-secondary service"></p-button>
+    </div>
     <div class="p-lg-6 p-md-8 p-d-flex p-jc-end">
       <p class="tittle">{{ username }}</p>
     </div>

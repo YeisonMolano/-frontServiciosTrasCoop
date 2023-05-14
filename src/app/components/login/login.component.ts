@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { MessageService } from 'primeng/api';
 import { AuthorizationService } from 'src/app/service/authorization.service';
 
 @Component({
@@ -10,7 +11,7 @@ import { AuthorizationService } from 'src/app/service/authorization.service';
 })
 export class LoginComponent {
   authorities: FormGroup
-  constructor(private authService: AuthorizationService, private fb: FormBuilder, private router: Router){
+  constructor(private message: MessageService, private authService: AuthorizationService, private fb: FormBuilder, private router: Router){
     this.authorities = fb.group({
       username: new FormControl('', [Validators.required]),
       password: new FormControl('', [Validators.required])
@@ -20,7 +21,8 @@ export class LoginComponent {
   logIn(){
     if(this.authorities.valid){
       this.authService.login(this.authorities.get('username')?.value, this.authorities.get('password')?.value).subscribe(res => {
-        if(res != ''){
+        console.log(res);
+        if(res != 'No se encuentra a este usuario'){
           localStorage.setItem('name', res.name);
           localStorage.setItem('lastName', res.lastName);
           localStorage.setItem('privateKey', res.privateKey);
@@ -33,8 +35,7 @@ export class LoginComponent {
             this.router.navigate([''])
           })
         }else{
-          console.log('No se ha encontrado el usuario');
-          
+          this.message.add({severity: 'error', summary: 'Error de credenciales', detail: 'Este usuario no existe'});
         }
         
       })

@@ -4,6 +4,9 @@ import { ConfirmationService, MenuItem, MessageService, ConfirmEventType } from 
 import { DomSanitizer } from '@angular/platform-browser';
 import { Carnet } from 'src/app/modells/carnet';
 import { Router } from '@angular/router';
+import { CarnetService } from 'src/app/service/carnet.service';
+import { TaxiService } from 'src/app/modells/taxiService';
+import { TaxiServiceService } from 'src/app/service/taxi-service.service';
 
 @Component({
   selector: 'app-principal',
@@ -16,6 +19,7 @@ export class PrincipalComponent implements OnInit {
   activeItem : MenuItem
   activeFormIntermunicipal: boolean
   activeFormUrbano: boolean
+  viewPending: boolean
   formCarnetMunicipal: FormGroup
   formCarnetUrbano: FormGroup
   tipoUsuario = [{}]
@@ -27,9 +31,12 @@ export class PrincipalComponent implements OnInit {
   viewUpdateImage : boolean
   fechaSeleccionada: Date
   imagenCargada: boolean
-  auth: boolean
+  admin: boolean
+  servicios: Array<TaxiService>
 
-  constructor(private router: Router, private confirmationService: ConfirmationService, private fb: FormBuilder, private message: MessageService, private sanitizer: DomSanitizer) {
+  constructor(private router: Router, private confirmationService: ConfirmationService, 
+    private fb: FormBuilder, private message: MessageService, private sanitizer: DomSanitizer, 
+    private carnetService: CarnetService, private taxiService: TaxiServiceService) {
     this.formCarnetMunicipal = fb.group({
       nombre : new FormControl('', [Validators.required]),
       apellido : new FormControl('', Validators.required),
@@ -39,9 +46,9 @@ export class PrincipalComponent implements OnInit {
     this.formCarnetUrbano = fb.group({
       nombre: new FormControl('', [Validators.required]),
       apellido: new FormControl('', [Validators.required]),
-      tipoDocumento: new FormControl('', Validators.required)
+      fechaDeNacimiento: new FormControl('', Validators.required)
     })
-    this.auth = false
+    this.admin = false
     this.usuario= ''
     this.tipoUsuario = [{tipo: "Adulto mayor"}, {tipo: "Estudiante universitario"}]
     this.visible = false;
@@ -49,19 +56,30 @@ export class PrincipalComponent implements OnInit {
     this.activeItem = {}
     this.activeFormIntermunicipal = false
     this.activeFormUrbano = false
+    this.viewPending = false
     this.img1 = ''
     this.img2 = ''
     this.img3 = ''
     this.viewUpdateImage = false
     this.fechaSeleccionada = new Date()
     this.imagenCargada = false
+    this.servicios = new Array<TaxiService>()
   }
   ngOnInit(): void {
-    
+    if(localStorage.getItem('AUTH') == 'ADMIN'){
+      this.admin = true
+    }
+    this.taxiService.getAllByPublicKey(localStorage.getItem('privateKey')!).subscribe(res => {
+      this.servicios = res
+      this.servicios.forEach(servicio => {
+        console.log(servicio);
+      })
+      console.log(this.servicios);
+    })
   }
 
   showDialog() {
-    if(localStorage.getItem('username') != null){
+    if(localStorage.getItem('name') != null){
       this.visible = true
     }else{
       this.router.navigate(['login'])
@@ -70,7 +88,6 @@ export class PrincipalComponent implements OnInit {
 
   servicio(item : MenuItem){
     this.activeItem = item
-    console.log();
     if(this.activeItem.label == "Servicio Urbano"){
       this.activeFormUrbano = true
       this.activeFormIntermunicipal = false
@@ -78,6 +95,10 @@ export class PrincipalComponent implements OnInit {
       this.activeFormIntermunicipal = true
       this.activeFormUrbano = false
     }
+  }
+
+  activePending(){
+    this.viewPending = !this.viewPending
   }
 
   onUpload(event: any) {
@@ -105,8 +126,8 @@ export class PrincipalComponent implements OnInit {
       carnet.img1 = this.img1
       carnet.img2 = this.img2
       carnet.img3 = this.img3
-      console.log(carnet); 
-      this.formCarnetMunicipal.reset()
+      this.carnetService.createCarnetIntermunicipal(carnet, localStorage.getItem('privateKey')!).subscribe(res =>{
+        this.formCarnetMunicipal.reset()
       this.img1 = ''
       this.img2 = ''
       this.img3 = ''
@@ -114,6 +135,12 @@ export class PrincipalComponent implements OnInit {
       this.viewUpdateImage = false
       this.visible = !this.visible
       this.message.add({ severity: 'success', summary: 'Datos enviados', detail: 'Los datos se han cargado correctamente, se le enviará una confirmación a su correo electronico' });
+      },
+      err => {
+        this.message.add({ severity: 'error', summary: 'Error interno', detail: 'Error en el servidor' });
+      })
+      
+      
     }else{
       this.message.add({ severity: 'warn', summary: 'Datos invalidos', detail: 'Por favor verifique que ha llenado todos los campos y que ha subido las imagenes correctamente' });
     }
@@ -124,7 +151,21 @@ export class PrincipalComponent implements OnInit {
       let carnet = new Carnet()
       carnet.nombre = this.formCarnetUrbano.get('nombre')?.value
       carnet.apellido = this.formCarnetUrbano.get('apellido')?.value
-      carnet.tipoUsuario = this.formCarnetUrbano.get('tipoDocumento')?.value
+      carnet.tipoUsuario = this.formCarnetUrbano.get('fechaDeNacimiento')?.value
+      carnet.img1 = this.img1
+      this.carnetService.createCarnetUrbano(carnet, localStorage.getItem('privateKey')!).subscribe(res => {
+        this.formCarnetUrbano.reset()
+        this.img1 = ''
+        this.imagenCargada = false
+      this.viewUpdateImage = false
+      this.visible = !this.visible
+      this.message.add({ severity: 'success', summary: 'Datos enviados', detail: 'Los datos se han cargado correctamente, se le enviará una confirmación a su correo electronico' });
+    },
+    err => {
+      this.message.add({ severity: 'error', summary: 'Error interno', detail: 'Error en el servidor' });
+    })
+    }else{
+      this.message.add({ severity: 'warn', summary: 'Datos invalidos', detail: 'Por favor verifique que ha llenado todos los campos y que ha subido las imagenes correctamente' });
     }
   }
 

@@ -43,12 +43,21 @@
     <google-map width="400px" height="300px"></google-map>
   </div>
   <div class="p-d-flex p-ai-center p-jc-center p-lg-3">
-    <div class="p-d-flex p-jc-center">
-      <p-button
-        label="Confirmar"
-        styleClass="p-button-raised p-button-secondary"
-        (onClick)="confirmService()"
-      ></p-button>
+    <div>
+      <div class="p-d-flex p-jc-center p-mb-3">
+        <p-button
+          label="Ver mis servicios"
+          styleClass="p-button-raised p-button-secondary"
+          (onClick)="confirmService()"
+        ></p-button>
+      </div>
+      <div class="p-d-flex p-jc-center p-mb-3">
+        <p-button
+          label="Confirmar"
+          styleClass="p-button-raised p-button-secondary"
+          (onClick)="confirmService()"
+        ></p-button>
+      </div>
     </div>
   </div>
 </div>

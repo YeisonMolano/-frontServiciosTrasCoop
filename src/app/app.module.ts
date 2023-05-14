@@ -13,6 +13,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { ToastModule } from 'primeng/toast';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { GoogleMapsModule } from '@angular/google-maps';
+import { TableModule } from 'primeng/table';
+import { TagModule } from 'primeng/tag';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -52,7 +54,9 @@ import { InfoPreciosComponent } from './components/info-precios/info-precios.com
     HttpClientModule,
     ToastModule,
     ConfirmDialogModule,
-    GoogleMapsModule
+    GoogleMapsModule,
+    TableModule,
+    TagModule
   ],
   providers: [MessageService, ConfirmationService],
   bootstrap: [AppComponent],

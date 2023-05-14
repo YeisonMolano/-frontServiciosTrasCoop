@@ -3,4 +3,5 @@ export class TaxiService{
     placeDeparture?: string
     destinationPlace?: string
     time?: Date
+    status?: string
 }

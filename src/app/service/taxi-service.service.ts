@@ -11,19 +11,25 @@ export class TaxiServiceService {
 
   constructor(private http: HttpClient) { }
 
-  createService(service: TaxiService){
-    return this.http.post<TaxiService>(this.rutaGlobal + '/service', service, {
+  createService(service: TaxiService, wallet: string){
+    console.log(service);
+    console.log(wallet);
+    return this.http.post<TaxiService>(this.rutaGlobal + 'new-service/' + wallet, service, {
       observe: 'response'
     })
   }
 
   updateService(service: TaxiService){
-    return this.http.put<TaxiService>(this.rutaGlobal + '/service', service, {
+    return this.http.put<TaxiService>(this.rutaGlobal + 'service', service, {
       observe: 'response'
     })
   }
 
   findService(id: number){
     return this.http.get<TaxiService>(this.rutaGlobal + 'find/' + id)
+  }
+
+  getAllByPublicKey(key: string){
+    return this.http.get<any>(this.rutaGlobal + 'get-all-users/' + key)
   }
 }

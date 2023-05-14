@@ -2,16 +2,29 @@
 <br />
 <br />
 <br /><br />
+<div *ngIf="!admin; else noLogued">
+
+</div>
+<ng-template #noLogued>
+
+</ng-template>
 <div class="p-d-flex p-m-0 p-p-0">
   <div class="p-lg-8">
     <app-slider></app-slider>
   </div>
   <div class="p-lg-4 p-pt-lg-2">
-    <div class="p-mb-3 p-mt-lg-6">
+    <div class="p-mb-3 p-mt-lg-2">
       <p-button
         label="Pedir servicio"
         styleClass="p-button-raised p-button-secondary"
         routerLink="servicio-taxi"
+      ></p-button>
+    </div>
+    <div class="p-mb-3">
+      <p-button
+        label="Ver mis servicios"
+        styleClass="p-button-raised p-button-secondary"
+        (onClick)="activePending()"
       ></p-button>
     </div>
     <div class="p-mb-3">
@@ -120,7 +133,7 @@
   </div>
   <div *ngIf="activeFormUrbano" class="p-card p-grid p-m-2">
     <div class="p-lg-4">
-      <form action="" [formGroup]="formCarnetMunicipal">
+      <form action="" [formGroup]="formCarnetUrbano">
         <div class="p-inputgroup">
           <span class="p-inputgroup-addon">
             <i class="pi pi-user-edit"></i>
@@ -149,7 +162,7 @@
             class="p-button-raised p-button-rounded"
             label="Enviar"
             style="width: 30%; height: 30px"
-            (click)="carnetIntermunicipal()"
+            (click)="carnetUrbano()"
           ></button>
         </div>
       </form>
@@ -180,6 +193,37 @@
       </ng-template>
     </div>
   </div>
+</p-dialog>
+
+<p-dialog 
+  header="Servicios de taxi"
+  [(visible)]="viewPending"
+  [modal]="true"
+  [style]="{ width: '50vw' }"
+  [draggable]="false"
+  [resizable]="false"
+  (onHide)="activeFormUrbano = false; activeFormIntermunicipal = false"
+>
+<p-table [value]="servicios" responsiveLayout="stack" [breakpoint]="'960px'" [tableStyle]="{'min-width': '40rem'}">
+  <ng-template pTemplate="header" let-columns>
+      <tr>
+          <th>Servicio</th>
+          <th>Lugar de recogida</th>
+          <th>Lugar de llegada</th>
+          <th>Hora</th>
+          <th>Estado</th>
+      </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-servicio let-columns="columns">
+      <tr>
+          <td><span class="p-column-title">Servicio</span>{{servicio.newService.servicio}}</td>
+          <td><span class="p-column-title">Lugar de recogida</span>{{servicio.newService.placeDeparture}}</td>
+          <td><span class="p-column-title">Lugar de llegada</span>{{servicio.newService.destinationPlace}}</td>
+          <td><span class="p-column-title">Hora</span>{{servicio.newService.time}}</td>
+          <td><span class="p-column-title">Estado</span>{{servicio.newService.status}}</td>
+      </tr>
+  </ng-template>
+</p-table>
 </p-dialog>
 
 <p-toast></p-toast>

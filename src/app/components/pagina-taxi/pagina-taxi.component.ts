@@ -20,6 +20,7 @@ export class PaginaTaxiComponent implements OnInit {
   tipoServicio : Array<TypeService>;
   servicio: TypeService;
   formNewService: FormGroup;
+  admin : boolean
 
   constructor(private fb: FormBuilder, private taxiService: TaxiServiceService, private router: Router, private message: MessageService) {
     this.tipoServicio = new Array<TypeService>()
@@ -33,14 +34,20 @@ export class PaginaTaxiComponent implements OnInit {
     tipoService2.name = 'Mensual'
     this.tipoServicio.push(tipoService2)
     this.servicio = new TypeService();
+    this.admin = false
     this.formNewService = fb.group({
       service: new FormControl('', []),
       placeDeparture: new FormControl('', [Validators.required]),
       destinationPlace: new FormControl('', [Validators.required]),
       time: new FormControl('', [Validators.required]),
     });
+
   }
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if(localStorage.getItem('AUTH') == 'ADMIN'){
+      this.admin = true
+    }
+  }
 
   confirmService() {
     if (this.formNewService.valid) {
@@ -49,7 +56,8 @@ export class PaginaTaxiComponent implements OnInit {
       service.placeDeparture = this.formNewService.get('placeDeparture')?.value;
       service.destinationPlace = this.formNewService.get('destinationPlace')?.value;
       service.time = this.formNewService.get('time')?.value;
-      this.taxiService.createService(service).subscribe(res => {
+      service.status = 'PENDIENTE'
+      this.taxiService.createService(service, localStorage.getItem('privateKey')!).subscribe(res => {
         this.formNewService.reset()
         this.router.navigate(['/'])
       },
