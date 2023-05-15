@@ -29,6 +29,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { InfoPreciosComponent } from './components/info-precios/info-precios.component';
 import { CrearUsuarioComponent } from './components/crear-usuario/crear-usuario.component';
 
+
 @NgModule({
   declarations: [
     AppComponent,

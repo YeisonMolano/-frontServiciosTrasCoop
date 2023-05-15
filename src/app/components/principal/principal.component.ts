@@ -7,6 +7,8 @@ import { Router } from '@angular/router';
 import { CarnetService } from 'src/app/service/carnet.service';
 import { TaxiService } from 'src/app/modells/taxiService';
 import { TaxiServiceService } from 'src/app/service/taxi-service.service';
+import { TypeService } from 'src/app/modells/typeService';
+import { PdfService } from 'src/app/service/pdf.service';
 
 @Component({
   selector: 'app-principal',
@@ -22,13 +24,18 @@ export class PrincipalComponent implements OnInit {
   viewPending: boolean
   formCarnetMunicipal: FormGroup
   formCarnetUrbano: FormGroup
-  tipoUsuario = [{}]
-  usuario : string
+  formCarnet: FormGroup
+  tipoUsuario : Array<TypeService>
+  tipoUsuarioUno : Array<TypeService>
+  usuario : TypeService
   uploadedFiles: any[] = [];
   img1 : string
   img2 : string
   img3 : string
   viewUpdateImage : boolean
+  tipoUno : TypeService
+  tipoDos : TypeService
+  tipoTres : TypeService
   fechaSeleccionada: Date
   imagenCargada: boolean
   admin: boolean
@@ -36,24 +43,54 @@ export class PrincipalComponent implements OnInit {
   activeServicesAdmin: boolean
   servicios: Array<TaxiService>
   serviciosTaxi: Array<TaxiService>
+  carnetsPendientes: Array<Carnet>
+  viewCarnetPending: boolean
+  imgCarnetPending: string
 
   constructor(private router: Router, private confirmationService: ConfirmationService, 
     private fb: FormBuilder, private message: MessageService, private sanitizer: DomSanitizer, 
-    private carnetService: CarnetService, private taxiService: TaxiServiceService) {
+    private carnetService: CarnetService, private taxiService: TaxiServiceService,
+    private pdf: PdfService) {
     this.formCarnetMunicipal = fb.group({
       nombre : new FormControl('', [Validators.required]),
       apellido : new FormControl('', Validators.required),
       usuario : new FormControl('', [Validators.required]),
-      fechaDeNacimiento: new FormControl('', Validators.required)
+      fechaDeNacimiento: new FormControl('', Validators.required),
+      email: new FormControl('', [Validators.required])
     })
     this.formCarnetUrbano = fb.group({
       nombre: new FormControl('', [Validators.required]),
       apellido: new FormControl('', [Validators.required]),
-      fechaDeNacimiento: new FormControl('', Validators.required)
+      usuario : new FormControl('', [Validators.required]),
+      fechaDeNacimiento: new FormControl('', Validators.required),
+      email: new FormControl('', [Validators.required])
+    })
+    this.formCarnet = fb.group({
+      nombre: new FormControl('', []),
+      apellido: new FormControl('', []),
+      tipoUsuario: new FormControl('', []),
+      fechaNacimiento: new FormControl('', []),
+      tipoCarnet: new FormControl('', []),
+      status: new FormControl('', []),
+      email: new FormControl('', []),
+      img1: new FormControl('', []),
+      img2: new FormControl('', []),
+      img3: new FormControl('', []),
     })
     this.admin = false
-    this.usuario= ''
-    this.tipoUsuario = [{tipo: "Adulto mayor"}, {tipo: "Estudiante universitario"}]
+    this.usuario= new TypeService()
+    this.tipoUsuario = new Array<TypeService>()
+    this.tipoUsuarioUno = new Array<TypeService>()
+    this.tipoUno = new TypeService()
+    this.tipoUno.name = 'Estudiante Universitario'
+    this.tipoDos = new TypeService()
+    this.tipoDos.name = 'Estudiante'
+    this.tipoTres = new TypeService()
+    this.tipoTres.name = 'Adulto Mayor'
+    this.tipoUsuario.push(this.tipoUno)
+    this.tipoUsuario.push(this.tipoTres)
+    this.tipoUsuarioUno.push(this.tipoDos)
+    this.tipoUsuarioUno.push(this.tipoTres)
     this.visible = false;
     this.servicioCompartido = [{ label: 'Servicio Urbano', icon: 'pi pi-fw pi-home' }, { label: 'Servicio Intermunicipal', icon: 'pi pi-fw pi-home' }]
     this.activeItem = {}
@@ -70,13 +107,19 @@ export class PrincipalComponent implements OnInit {
     this.imagenCargada = false
     this.servicios = new Array<TaxiService>()
     this.serviciosTaxi = new Array<TaxiService>()
+    this.carnetsPendientes = new Array<Carnet>()
+    this.viewCarnetPending = false
+    this.imgCarnetPending = ''
   }
   ngOnInit(): void {
     if(localStorage.getItem('auth') == 'ADMIN'){
       this.admin = true
       this.taxiService.getAllServices().subscribe(res => {
         this.serviciosTaxi = res
-        console.log(this.serviciosTaxi);
+      })
+      this.carnetService.findAllPending().subscribe(res => {
+        this.carnetsPendientes = res
+        console.log(this.carnetsPendientes);
       })
     }
     this.taxiService.getAllByPublicKey(localStorage.getItem('privateKey')!).subscribe(res => {
@@ -141,8 +184,9 @@ export class PrincipalComponent implements OnInit {
       let carnet = new Carnet()
       carnet.nombre = this.formCarnetMunicipal.get('nombre')?.value
       carnet.apellido = this.formCarnetMunicipal.get('apellido')?.value
-      carnet.tipoUsuario = this.formCarnetMunicipal.get('usuario')?.value
+      carnet.tipoUsuario = this.usuario.name
       carnet.fechaNacimiento = this.formCarnetMunicipal.get('fechaDeNacimiento')?.value
+      carnet.email = this.formCarnetMunicipal.get('email')?.value
       carnet.status = 'PENDIENTE'
       carnet.tipoCarnet = 'INTERMUNICIPAL'
       carnet.img1 = this.img1
@@ -168,16 +212,20 @@ export class PrincipalComponent implements OnInit {
     }
   }
 
-  carnetUrbano(){
+  carnetUrbano(){   
     if(this.formCarnetUrbano.valid && this.imagenCargada){
       let carnet = new Carnet()
       carnet.nombre = this.formCarnetUrbano.get('nombre')?.value
       carnet.apellido = this.formCarnetUrbano.get('apellido')?.value
-      carnet.tipoUsuario = this.formCarnetUrbano.get('fechaDeNacimiento')?.value
+      carnet.tipoUsuario = this.usuario.name
+      carnet.fechaNacimiento = this.formCarnetUrbano.get('fechaDeNacimiento')?.value
+      carnet.email = this.formCarnetUrbano.get('email')?.value
       carnet.img1 = this.img1
       carnet.status = 'PENDIENTE'
       carnet.tipoCarnet = 'URBANO'
-      this.carnetService.createCarnetUrbano(carnet, localStorage.getItem('privateKey')!).subscribe(res => {
+      console.log(carnet);
+      
+      this.carnetService.createCarnetUrbano(carnet, localStorage.getItem('privateKey')!).subscribe(res => {        
         this.formCarnetUrbano.reset()
         this.img1 = ''
         this.imagenCargada = false
@@ -213,4 +261,63 @@ export class PrincipalComponent implements OnInit {
         }
     });
 }
+
+  viewCarnetPendingDialog(carnet: any){
+    console.log(carnet);
+    this.formCarnet.get('nombre')?.setValue(carnet.newCarnet.username)
+    this.formCarnet.get('apellido')?.setValue(carnet.newCarnet.apellido)
+    this.formCarnet.get('tipoUsuario')?.setValue(carnet.newCarnet.tipoUsuario)
+    this.formCarnet.get('fechaNacimiento')?.setValue(carnet.newCarnet.fechaNacimiento)
+    this.formCarnet.get('tipoCarnet')?.setValue(carnet.newCarnet.tipoCarnet)
+    this.formCarnet.get('status')?.setValue(carnet.newCarnet.status)
+    this.formCarnet.get('email')?.setValue(carnet.newCarnet.nombre)
+    this.imgCarnetPending = carnet.newCarnet.img1!
+    console.log(carnet);
+    this.viewCarnetPending = true
+  }
+
+  crearCarnet(){
+    let descuento = ''
+    if(this.formCarnet.get('tipoUsuario').value == 'Estudiante' || this.formCarnet.get('tipoUsuario').value == 'Estudiante Universitario'){
+      descuento = 'Descuento por estudio'
+    }else{
+      descuento = 'Desceunto por edad'
+    }
+    this.pdf.createPdf(this.formCarnet.get('tipoCarnet').value, this.formCarnet.get('nombre').value + ' ' + this.formCarnet.get('apellido').value, this.formCarnet.get('tipoUsuario').value, this.formCarnet.get('fechaNacimiento').value, descuento)
+    this.eliminarDeLaLista(this.formCarnet.get('nombre').value, this.formCarnet.get('apellido').value)
+    this.formCarnet.reset()
+    this.viewCarnetPending = false
+  }
+
+  eliminarDeLaLista(nombre: string, apellido: string){
+    let count = 0
+    for (let i = 0; i < this.carnetsPendientes.length; i++) {
+      if(this.carnetsPendientes[i].nombre == nombre && this.carnetsPendientes[i].apellido == apellido){
+        count = i;
+      }
+    }
+    this.carnetsPendientes.splice(count - 1, 1)
+  }
+
+  aprovarServicioTaxi(recogida: any, llegada: any, time: any){
+    let count = 0
+    for (let i = 0; i < this.serviciosTaxi.length; i++) {
+      if(this.serviciosTaxi[i].placeDeparture == recogida && this.serviciosTaxi[i].destinationPlace == llegada && this.serviciosTaxi[i].time == time){
+        count = i;
+      }
+    }
+    this.serviciosTaxi.splice(count, 1)
+  }
+
+  rechazar(){
+    let count = 0
+    for (let i = 0; i < this.carnetsPendientes.length; i++) {
+      if(this.carnetsPendientes[i].nombre == this.formCarnet.get('nombre').value && this.carnetsPendientes[i].apellido == this.formCarnet.get('apellido').value){
+        count = i;
+      }
+    }
+    this.viewCarnetPending = false
+    this.carnetsPendientes.splice(count - 1, 1)
+    this.formCarnet.reset()
+  }
 }

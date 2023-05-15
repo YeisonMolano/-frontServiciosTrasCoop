@@ -1,5 +1,4 @@
 :host ::ng-deep .p-button{
-    width: 350px;
     padding: 4%;
     background-color: rgba(77, 94, 163, 1);
 }
@@ -73,11 +72,15 @@
 :host ::ng-deep .p-button.p-button-icon-only{
     width: 2rem;
     height: 2rem;
-    background-color: white;
 }
 
 :host ::ng-deep .p-button.p-button-icon-only:hover{
     width: 2rem;
     height: 2rem;
-    background-color: rgba(77, 94, 163, 1);
+    background-color: rgb(23, 70, 255);
+}
+
+:host ::ng-deep .p-button, .p-splitbutton.p-button-secondary{
+    width: 250px;
+    padding: 10px;;
 }

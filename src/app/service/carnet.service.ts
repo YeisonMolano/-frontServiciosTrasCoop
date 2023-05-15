@@ -17,7 +17,7 @@ export class CarnetService {
   }
 
   createCarnetUrbano(newCarnet: Carnet, wallet: string){
-    return this.http.post<any>(this.rutaGlobal + 'carnet-inter/' + wallet, newCarnet, {
+    return this.http.post<any>(this.rutaGlobal + 'carnet-urbano/' + wallet, newCarnet, {
       observe: 'response'
     })
   }
