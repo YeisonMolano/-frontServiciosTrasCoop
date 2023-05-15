@@ -69,3 +69,15 @@
 :host ::ng-deep .p-calendar{
     width: 100%;
 }
+
+:host ::ng-deep .p-button.p-button-icon-only{
+    width: 2rem;
+    height: 2rem;
+    background-color: white;
+}
+
+:host ::ng-deep .p-button.p-button-icon-only:hover{
+    width: 2rem;
+    height: 2rem;
+    background-color: rgba(77, 94, 163, 1);
+}

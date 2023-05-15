@@ -21,7 +21,6 @@ export class LoginComponent {
   logIn(){
     if(this.authorities.valid){
       this.authService.login(this.authorities.get('username')?.value, this.authorities.get('password')?.value).subscribe(res => {
-        console.log(res);
         if(res != 'No se encuentra a este usuario'){
           localStorage.setItem('name', res.name);
           localStorage.setItem('lastName', res.lastName);
@@ -30,8 +29,9 @@ export class LoginComponent {
           localStorage.setItem('email', res.email);
           localStorage.setItem('tellphone', res.tellphone);
           localStorage.setItem('myWallet', res.myWallet);
+          localStorage.setItem('auth', res.auth)
           this.authService.getWallet(res.privateKey).subscribe(res => {
-            localStorage.setItem('myWallet', res);            
+            localStorage.setItem('myWallet', res); 
             this.router.navigate([''])
           })
         }else{

@@ -15,6 +15,7 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { GoogleMapsModule } from '@angular/google-maps';
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
+import { CheckboxModule } from 'primeng/checkbox';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -26,6 +27,7 @@ import { SliderComponent } from './components/slider/slider.component';
 import { PaginaTaxiComponent } from './components/pagina-taxi/pagina-taxi.component';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { InfoPreciosComponent } from './components/info-precios/info-precios.component';
+import { CrearUsuarioComponent } from './components/crear-usuario/crear-usuario.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +38,7 @@ import { InfoPreciosComponent } from './components/info-precios/info-precios.com
     SliderComponent,
     PaginaTaxiComponent,
     InfoPreciosComponent,
+    CrearUsuarioComponent,
   ],
   imports: [
     BrowserModule,
@@ -56,7 +59,8 @@ import { InfoPreciosComponent } from './components/info-precios/info-precios.com
     ConfirmDialogModule,
     GoogleMapsModule,
     TableModule,
-    TagModule
+    TagModule,
+    CheckboxModule
   ],
   providers: [MessageService, ConfirmationService],
   bootstrap: [AppComponent],

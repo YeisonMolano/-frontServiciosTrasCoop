@@ -21,4 +21,8 @@ export class CarnetService {
       observe: 'response'
     })
   }
+
+  findAllPending(){
+    return this.http.get<any>(this.rutaGlobal + 'get-carnets-pending')
+  }
 }

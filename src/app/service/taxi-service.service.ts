@@ -32,4 +32,8 @@ export class TaxiServiceService {
   getAllByPublicKey(key: string){
     return this.http.get<any>(this.rutaGlobal + 'get-all-users/' + key)
   }
+
+  getAllServices(){
+    return this.http.get<any>(this.rutaGlobal + 'get-all-services/')
+  }
 }

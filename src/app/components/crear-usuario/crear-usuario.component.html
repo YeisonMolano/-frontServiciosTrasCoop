@@ -1,0 +1,17 @@
+<app-header></app-header>
+<div class="container p-mt-6">
+    <h2>Crear usuario</h2>
+    <form [formGroup]="formNewUser">
+        <input type="text" id="username" name="username" formControlName="name" placeholder="Nombres">
+        <input type="text" id="password" name="password" formControlName="lastName" placeholder="Apellido">
+        <input type="text" id="username" name="username" formControlName="tellphone" placeholder="Telefono">
+        <input type="text" id="username" name="username" formControlName="email" placeholder="Email">
+        <input type="password" id="username" name="username" formControlName="password" placeholder="Contraseña">
+        <p-checkbox [(ngModel)]="isAdmin" [binary]="true" inputId="isAdmin" formControlName="auth"></p-checkbox>
+        <label for="isAdmin">¿Es usted administrador?</label>       
+        <Input type="submit" value="Registrarse" (click)="createUser()">
+    </form>
+</div>
+
+
+<p-toast></p-toast>

@@ -32,7 +32,10 @@ export class PrincipalComponent implements OnInit {
   fechaSeleccionada: Date
   imagenCargada: boolean
   admin: boolean
+  activeCarnetsAdmin: boolean
+  activeServicesAdmin: boolean
   servicios: Array<TaxiService>
+  serviciosTaxi: Array<TaxiService>
 
   constructor(private router: Router, private confirmationService: ConfirmationService, 
     private fb: FormBuilder, private message: MessageService, private sanitizer: DomSanitizer, 
@@ -57,6 +60,8 @@ export class PrincipalComponent implements OnInit {
     this.activeFormIntermunicipal = false
     this.activeFormUrbano = false
     this.viewPending = false
+    this.activeCarnetsAdmin = false
+    this.activeServicesAdmin = true
     this.img1 = ''
     this.img2 = ''
     this.img3 = ''
@@ -64,17 +69,18 @@ export class PrincipalComponent implements OnInit {
     this.fechaSeleccionada = new Date()
     this.imagenCargada = false
     this.servicios = new Array<TaxiService>()
+    this.serviciosTaxi = new Array<TaxiService>()
   }
   ngOnInit(): void {
-    if(localStorage.getItem('AUTH') == 'ADMIN'){
+    if(localStorage.getItem('auth') == 'ADMIN'){
       this.admin = true
+      this.taxiService.getAllServices().subscribe(res => {
+        this.serviciosTaxi = res
+        console.log(this.serviciosTaxi);
+      })
     }
     this.taxiService.getAllByPublicKey(localStorage.getItem('privateKey')!).subscribe(res => {
       this.servicios = res
-      this.servicios.forEach(servicio => {
-        console.log(servicio);
-      })
-      console.log(this.servicios);
     })
   }
 
@@ -95,6 +101,20 @@ export class PrincipalComponent implements OnInit {
       this.activeFormIntermunicipal = true
       this.activeFormUrbano = false
     }
+  }
+
+  activeCarnets(){
+    console.log('Aca');
+    
+    this.activeCarnetsAdmin = true
+    this.activeServicesAdmin = false
+  }
+
+  activeServices(){
+    console.log('Llego');
+    
+    this.activeCarnetsAdmin = false
+    this.activeServicesAdmin = true
   }
 
   activePending(){
@@ -123,6 +143,8 @@ export class PrincipalComponent implements OnInit {
       carnet.apellido = this.formCarnetMunicipal.get('apellido')?.value
       carnet.tipoUsuario = this.formCarnetMunicipal.get('usuario')?.value
       carnet.fechaNacimiento = this.formCarnetMunicipal.get('fechaDeNacimiento')?.value
+      carnet.status = 'PENDIENTE'
+      carnet.tipoCarnet = 'INTERMUNICIPAL'
       carnet.img1 = this.img1
       carnet.img2 = this.img2
       carnet.img3 = this.img3
@@ -153,6 +175,8 @@ export class PrincipalComponent implements OnInit {
       carnet.apellido = this.formCarnetUrbano.get('apellido')?.value
       carnet.tipoUsuario = this.formCarnetUrbano.get('fechaDeNacimiento')?.value
       carnet.img1 = this.img1
+      carnet.status = 'PENDIENTE'
+      carnet.tipoCarnet = 'URBANO'
       this.carnetService.createCarnetUrbano(carnet, localStorage.getItem('privateKey')!).subscribe(res => {
         this.formCarnetUrbano.reset()
         this.img1 = ''
